@@ -4,7 +4,7 @@ class Formulario():
 
     def get_productos(self):
         # Conexión a la instancia de MongoDB en localhost
-        client = MongoClient('mongodb://localhost:27017/')
+        client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
         db = client.Productos
         
         # Recuperar todos los documentos de la colección 'products'
@@ -22,7 +22,7 @@ class Formulario():
     
     def insertar_producto(self):
         # Conexión a la instancia de MongoDB en localhost
-        client = MongoClient('mongodb://localhost:27017/')
+        client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
         db = client.Productos
         id = request.json['_id']
         nombre = request.json['nombre_producto']
@@ -56,7 +56,7 @@ class Formulario():
     
     def editar_campo_producto(self, id_producto):
         # Conexión a la instancia de MongoDB en localhost
-        client = MongoClient('mongodb://localhost:27017/')
+        client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
         db = client.Productos
         id = str(id_producto)
         imagenes_productos = request.json['imagenes_productos']
@@ -74,7 +74,7 @@ class Formulario():
     
     def editar_campo_producto(self, id_producto):
         # Conexión a la instancia de MongoDB en localhost
-        client = MongoClient('mongodb://localhost:27017/')
+        client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
         db = client.Productos
         id = str(id_producto)
         imagenes_productos = request.json['imagenes_productos']
@@ -89,7 +89,7 @@ class Formulario():
     
     def eliminar_producto(self, id_producto):
         # Conexión a la instancia de MongoDB en localhost
-        client = MongoClient('mongodb://localhost:27017/')
+        client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
         db = client.Productos
         id = str(id_producto)
         # Eliminar el documento con el _id especificado

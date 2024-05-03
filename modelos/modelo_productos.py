@@ -55,7 +55,7 @@ class Formulario():
         id = str(request.json['_id'])
         nombre_producto = request.json['nombre_producto']
         categoria = request.json['categoria']
-        precio = request.json['precio']
+        precio = int(request.json['precio'])
         descripcion = request.json['descripcion']
 
         info_producto_editar = {

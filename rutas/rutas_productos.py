@@ -15,10 +15,10 @@ def get_productos():
 def post_producto():
    return con_formulario.post_producto()
 
-@todo.route('/editar-producto/<id_producto>', methods=['PUT'])
+@todo.route('/editar-producto/', methods=['PUT'])
 @cross_origin()  
-def update_campo_producto(id_producto):
-   return con_formulario.update_campo_producto(id_producto)
+def update_campo_producto():
+   return con_formulario.update_campo_producto()
 
 
 @todo.route('/eliminar-producto/<id_producto>', methods=['DELETE'])

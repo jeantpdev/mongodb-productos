@@ -47,12 +47,12 @@ class Formulario():
         
         return jsonify({"mensaje": "Producto insertado correctamente"})
     
-    def editar_campo_producto(self, id_producto):
+    def editar_campo_producto(self):
 
         client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
         db = client.Productos
-        id = str(id_producto)
-        
+
+        id = str(request.json['_id'])
         nombre_producto = request.json['nombre_producto']
         categoria = request.json['categoria']
         precio = request.json['precio']
@@ -75,7 +75,7 @@ class Formulario():
     def eliminar_producto(self, id_producto):
         client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
         db = client.Productos
-        
+
         id = str(id_producto)
 
         resultado = db.lista_productos.delete_one({"_id": id})

@@ -12,8 +12,8 @@ class Formulario_Controlador():
         query = mod_formulario.insertar_producto()
         return query
     
-    def update_campo_producto(self, id_producto):
-        query = mod_formulario.editar_campo_producto(id_producto)
+    def update_campo_producto(self):
+        query = mod_formulario.editar_campo_producto()
         return query
     
     def delete_producto(self, id_producto):

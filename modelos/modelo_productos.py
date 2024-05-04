@@ -23,8 +23,8 @@ class Formulario():
         nombre = request.json['nombre_producto']
         categoria = request.json['categoria']
         descripcion = request.json['descripcion']
-        precio = request.json['precio']
-        descuento = request.json['descuento']
+        precio = int(request.json['precio'])
+        descuento = int(request.json['descuento'])
         imagen_principal = request.json['imagen_principal']
         imagenes_productos = request.json['imagenes_productos']
         dimensiones = request.json['dimensiones']

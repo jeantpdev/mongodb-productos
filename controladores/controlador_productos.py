@@ -3,6 +3,14 @@ from modelos.modelo_productos import *
 mod_formulario = Formulario()
 
 class Formulario_Controlador():
+
+    def delete_imagen(self):
+        query = mod_formulario.eliminar_imagen()
+        return query
+
+    def post_imagen(self):
+        query = mod_formulario.guardar_imagen()
+        return query
     
     def get_productos(self):
         query = mod_formulario.get_productos()

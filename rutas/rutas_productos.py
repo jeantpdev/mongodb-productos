@@ -5,6 +5,16 @@ con_formulario = Formulario_Controlador()
 
 todo = Blueprint('todo', __name__)
 
+@todo.route('/eliminar-imagen/', methods=['POST'])
+@cross_origin()  
+def delete_imagen_productos():
+   return con_formulario.delete_imagen()
+
+@todo.route('/guardar-imagen/', methods=['POST'])
+@cross_origin()  
+def post_imagen_productos():
+   return con_formulario.post_imagen()
+
 @todo.route('/productos/', methods=['GET'])
 @cross_origin()  
 def get_productos():

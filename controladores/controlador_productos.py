@@ -12,6 +12,10 @@ class Formulario_Controlador():
         query = mod_formulario.guardar_imagen()
         return query
     
+    def post_crear_imagen(self):
+        query = mod_formulario.crear_imagen()
+        return query
+    
     def get_productos(self):
         query = mod_formulario.get_productos()
         return query

@@ -47,6 +47,66 @@ class Formulario():
         except Exception as e:
             print(e)
             return jsonify({"status_imagen_eliminada": "error"})
+        
+    def crear_imagen(self):
+
+        try:
+
+            cloudinary.config( 
+            cloud_name = "duxf5m5c2", 
+            api_key = "129967153595247", 
+            api_secret = "M-4VvvNCIK5X2EbLIQ1it9iOkIw")
+        
+            imagen_principal = request.files.getlist('imagen_principal')
+            imagenes_secundarias = request.files.getlist('imagenes_secundarias')
+
+            # Se sube imagen principal
+            resultado = cloudinary.uploader.upload(imagen_principal[0])
+            url_imagen_principal = resultado['secure_url']
+
+            urls_imagenes_secundarias = []
+            for imagen in imagenes_secundarias:
+                resultado = cloudinary.uploader.upload(imagen)
+                url_imagen = resultado['secure_url']
+                urls_imagenes_secundarias.append(url_imagen)
+
+            return jsonify({"urls_imagenes_secundarias": urls_imagenes_secundarias, "url_imagen_principal": url_imagen_principal})
+        
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500     
+        
+    def insertar_producto(self):
+
+        client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
+        db = client.Productos
+
+        id = request.json['_id']
+        nombre = request.json['nombre_producto']
+        categoria = request.json['categoria']
+        descripcion = request.json['descripcion']
+        precio = int(request.json['precio'])
+        descuento = int(request.json['descuento'])
+        imagen_principal = request.json['imagen_principal']
+        imagenes_productos = request.json['imagenes_productos']
+        dimensiones = request.json['dimensiones']
+        material = request.json['material']
+
+        documento = {
+            "_id": id,
+            "nombre_producto": nombre,
+            "categoria": categoria,
+            "descripcion": descripcion,
+            "precio": precio,
+            "descuento": descuento,
+            "imagen_principal": imagen_principal,
+            "imagenes_productos": imagenes_productos,
+            "dimensiones": dimensiones,
+            "material": material
+        }
+        
+        db.lista_productos.insert_one(documento)
+        
+        return jsonify({"mensaje": "Producto insertado correctamente"})
 
     # FALTA ACTUALIZAR LA IMAGEN EN LA BD
     def guardar_imagen(self):
@@ -61,8 +121,9 @@ class Formulario():
         
         try:
             imagenes = request.files.getlist('imagenes')
-            id = request.form.get('id')
             tipo_imagen = request.form.get('tipo_imagen')
+            if tipo_imagen == "imagen principal":
+                id = request.form.get('id')
 
             urls_imagenes = []
             
@@ -104,39 +165,6 @@ class Formulario():
             datos.append(producto)
         
         return jsonify({"productos": datos})
-    
-    def insertar_producto(self):
-
-        client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
-        db = client.Productos
-
-        id = request.json['_id']
-        nombre = request.json['nombre_producto']
-        categoria = request.json['categoria']
-        descripcion = request.json['descripcion']
-        precio = int(request.json['precio'])
-        descuento = int(request.json['descuento'])
-        imagen_principal = request.json['imagen_principal']
-        imagenes_productos = request.json['imagenes_productos']
-        dimensiones = request.json['dimensiones']
-        material = request.json['material']
-
-        documento = {
-            "_id": id,
-            "nombre_producto": nombre,
-            "categoria": categoria,
-            "descripcion": descripcion,
-            "precio": precio,
-            "descuento": descuento,
-            "imagen_principal": imagen_principal,
-            "imagenes_productos": imagenes_productos,
-            "dimensiones": dimensiones,
-            "material": material
-        }
-        
-        db.lista_productos.insert_one(documento)
-        
-        return jsonify({"mensaje": "Producto insertado correctamente"})
     
     def editar_campo_producto(self):
 

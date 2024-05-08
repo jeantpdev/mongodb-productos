@@ -10,6 +10,11 @@ todo = Blueprint('todo', __name__)
 def delete_imagen_productos():
    return con_formulario.delete_imagen()
 
+@todo.route('/crear-imagen/', methods=['POST'])
+@cross_origin()  
+def post_crear_imagen_producto():
+   return con_formulario.post_crear_imagen()
+
 @todo.route('/guardar-imagen/', methods=['POST'])
 @cross_origin()  
 def post_imagen_productos():

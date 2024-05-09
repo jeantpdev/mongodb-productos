@@ -1,6 +1,7 @@
 from librerias import *
 from rutas.rutas_productos import *
 
+
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 

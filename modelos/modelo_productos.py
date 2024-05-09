@@ -1,4 +1,6 @@
 from librerias import *
+from dotenv import load_dotenv
+load_dotenv()
 
 class Formulario():        
 
@@ -14,16 +16,16 @@ class Formulario():
 
         try:
             cloudinary.config( 
-                cloud_name = "duxf5m5c2", 
-                api_key = "129967153595247", 
-                api_secret = "M-4VvvNCIK5X2EbLIQ1it9iOkIw")
+                cloud_name = os.getenv('CLOUD_NAME'), 
+                api_key = os.getenv('API_KEY'), 
+                api_secret = os.getenv('API_SECRET'))
 
             res = cloudinary.uploader.destroy(imagen_id)
 
             imagen_eliminada = res['result']
 
             if imagen_eliminada == "ok":
-                client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
+                client = MongoClient(os.getenv('MONGO_URI'))
                 db = client.Productos
 
                 if tipo_imagen == "principal":
@@ -53,9 +55,9 @@ class Formulario():
         try:
 
             cloudinary.config( 
-            cloud_name = "duxf5m5c2", 
-            api_key = "129967153595247", 
-            api_secret = "M-4VvvNCIK5X2EbLIQ1it9iOkIw")
+            cloud_name = os.getenv('CLOUD_NAME'), 
+            api_key = os.getenv('API_KEY'), 
+            api_secret = os.getenv('API_SECRET'))
         
             imagen_principal = request.files.getlist('imagen_principal')
             imagenes_secundarias = request.files.getlist('imagenes_secundarias')
@@ -77,7 +79,7 @@ class Formulario():
         
     def insertar_producto(self):
 
-        client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
+        client = MongoClient(os.getenv('MONGO_URI'))
         db = client.Productos
 
         id = request.json['_id']
@@ -111,13 +113,13 @@ class Formulario():
     # FALTA ACTUALIZAR LA IMAGEN EN LA BD
     def guardar_imagen(self):
 
-        client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
+        client = MongoClient(os.getenv('MONGO_URI'))
         db = client.Productos
 
         cloudinary.config( 
-            cloud_name = "duxf5m5c2", 
-            api_key = "129967153595247", 
-            api_secret = "M-4VvvNCIK5X2EbLIQ1it9iOkIw")
+            cloud_name = os.getenv('CLOUD_NAME'), 
+            api_key = os.getenv('API_KEY'), 
+            api_secret = os.getenv('API_SECRET'))
         
         try:
             imagenes = request.files.getlist('imagenes')
@@ -155,7 +157,7 @@ class Formulario():
             return jsonify({"error": str(e)}), 500
     
     def get_productos(self):
-        client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
+        client = MongoClient(os.getenv('MONGO_URI'))
         db = client.Productos
         
         lista_productos = db.lista_productos.find()
@@ -168,7 +170,7 @@ class Formulario():
     
     def editar_campo_producto(self):
 
-        client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
+        client = MongoClient(os.getenv('MONGO_URI'))
         db = client.Productos
 
         id = str(request.json['_id'])
@@ -191,7 +193,7 @@ class Formulario():
         return jsonify({"mensaje": "Producto actualizado correctamente"})
     
     def eliminar_producto(self, id_producto):
-        client = MongoClient('mongodb+srv://jeantpdev:2HH3bRjoUMrUMGYU@productos.ns6gatt.mongodb.net/')
+        client = MongoClient(os.getenv('MONGO_URI'))
         db = client.Productos
 
         id = str(id_producto)

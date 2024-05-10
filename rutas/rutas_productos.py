@@ -63,18 +63,8 @@ def post_imagen_productos():
    
 @todo.route('/productos/', methods=['GET'])
 @cross_origin()
-@jwt_required()
 def get_productos():
-   try:
-      identidad = get_jwt_identity()
-      acceso = autenticar_usuario(identidad)
-      if acceso == False:
-         return jsonify({'mensaje': 'Acceso denegado! Solo los administradores pueden acceder a esta ruta.'}), 403
-      if acceso == True:
-         return con_formulario.get_productos()
-      
-   except Exception as e:
-          return jsonify({"error": str(e)}), 500     
+      return con_formulario.get_productos()
     
 @todo.route('/insertar-producto/', methods=['POST'])
 @cross_origin()

@@ -3,7 +3,6 @@ from conexionMongoDB import mongo
 from conexionCloudinary import cloudinary_bd
 from utils import *
 
-
 class Formulario():  
 
     #TODO: Recibir busqueda de columan en especifico

@@ -157,11 +157,10 @@ class Formulario():
         
     #TODO: En la web hay que enviarle el id del producto
     def eliminar_producto(self, id_producto):
-        db = mongo.conexion_mongo()
 
-        resultado = db.lista_productos.delete_one({"_id": str(id_producto)})
+        resultado = mongo.eliminar_producto(id_producto)
 
-        if resultado.deleted_count == 1:
+        if resultado == "eliminado":
             return jsonify({"mensaje": "Producto eliminado correctamente"})
         else:
             return jsonify({"mensaje": "No se encontró ningún producto con el ID especificado"})

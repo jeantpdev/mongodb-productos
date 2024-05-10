@@ -17,6 +17,14 @@ class mongo:
         producto = db.lista_productos.find_one({"_id": id})
         return producto
     
+    def eliminar_producto(id):
+        db = mongo.conexion_mongo()
+        resultado = db.lista_productos.delete_one({"_id": str(id)})
+        if resultado.deleted_count == 1:
+            return "eliminado"  # Producto eliminado correctamente
+        else:
+            return "no eliminado"  # No se pudo eliminar el producto
+    
     def insertar_producto(nuevo_producto):
         db = mongo.conexion_mongo()
         resultado = db.lista_productos.insert_one(nuevo_producto)

@@ -1,4 +1,5 @@
 import cloudinary
+import cloudinary.uploader
 # Lectura de variables de entorno
 from dotenv import load_dotenv
 load_dotenv()

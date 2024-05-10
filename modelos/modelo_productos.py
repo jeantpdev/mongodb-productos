@@ -1,202 +1,166 @@
 from librerias import *
+from conexionMongoDB import mongo
+from conexionCloudinary import cloudinary_bd
+from utils import *
 
-class Formulario():        
 
+class Formulario():  
+
+    #TODO: Recibir busqueda de columan en especifico
     def eliminar_imagen(self):
-
         id_producto = request.json['id']
-        imagen_url = request.json['imagen_url']
-        tipo_imagen = request.json['tipo_imagen']
-        index = request.json['index']
+        producto = mongo.buscar_producto(id_producto)
 
-        parts = imagen_url.split('/')
-        imagen_id = parts[-1].split('.')[0]
+        if producto:
+            imagen_url = request.json['imagen_url']
+            tipo_imagen = request.json['tipo_imagen']
+            index = request.json['index']
+            id_imagen = utils.extraer_id_imagen(imagen_url)
 
-        try:
-            cloudinary.config( 
-                cloud_name = os.getenv('CLOUD_NAME'), 
-                api_key = os.getenv('API_KEY'), 
-                api_secret = os.getenv('API_SECRET'))
+            try:
+                imagen_eliminada = cloudinary_bd.eliminar_imagen(id_imagen)
 
-            res = cloudinary.uploader.destroy(imagen_id)
+                if imagen_eliminada == "ok":
 
-            imagen_eliminada = res['result']
+                    if tipo_imagen == "principal":
+                        resultado = mongo.actualizar_imagen_principal(id_producto, "no dado")
 
-            if imagen_eliminada == "ok":
-                client = MongoClient(os.getenv('MONGO_URI'))
-                db = client.Productos
+                        if resultado == "actualizada":
+                            return jsonify({"status_imagen_eliminada": "correcto", "mensaje": "Imagen eliminada"}), 200
+                        else:
+                            return jsonify({"mensaje": "Error al eliminar imagen"}), 500       
+            
+                    if tipo_imagen == "secundaria":
+                        index_imagen_a_eliminar = producto["imagenes_productos"][index]
+                        resultado = mongo.actualizar_imagenes_secundarias(id_producto, index_imagen_a_eliminar, "pull")
 
-                if tipo_imagen == "principal":
-                    db.lista_productos.update_one(
-                        {"_id": id_producto},
-                        {"$set": {"imagen_principal": "no dado"}})
+                        #* TODO: Eliminar del frontend mensaje de confirmacion "status_imagen_eliminada"
+                        if resultado == "actualizada":
+                            return jsonify({"status_imagen_eliminada": "correcto", "mensaje": "Imagen eliminada"}), 200
+                        else:
+                            return jsonify({"mensaje": "Error al eliminar imagen"}), 500  
 
-                if tipo_imagen == "secundaria":
-                    producto = db.lista_productos.find_one({"_id": id_producto})
-                    if producto:
-                        imagen_a_eliminar = producto["imagenes_productos"][index]
-                        db.lista_productos.update_one(
-                            {"_id": id_producto},
-                            {"$pull": {"imagenes_productos": imagen_a_eliminar}})
-
-                producto_actualizado = db.lista_productos.find_one({"_id": id_producto})
-                print(producto_actualizado)
-
-                return jsonify({"status_imagen_eliminada": "correcto"}), 200
-
-        except Exception as e:
-            print(e)
-            return jsonify({"status_imagen_eliminada": "error"})
+            except Exception as e:
+                print(e)
+                return jsonify({"status_imagen_eliminada": "error"})
+        else:
+            return jsonify({"error": "no existe el id"})
         
+ 
     def crear_imagen(self):
 
         try:
-
-            cloudinary.config( 
-            cloud_name = os.getenv('CLOUD_NAME'), 
-            api_key = os.getenv('API_KEY'), 
-            api_secret = os.getenv('API_SECRET'))
-        
             imagen_principal = request.files.getlist('imagen_principal')
             imagenes_secundarias = request.files.getlist('imagenes_secundarias')
 
             # Se sube imagen principal
-            resultado = cloudinary.uploader.upload(imagen_principal[0])
-            url_imagen_principal = resultado['secure_url']
+            url_imagen_principal = cloudinary_bd.subir_imagen(imagen_principal[0])
 
+            # Se suben las imagenes secundarias
             urls_imagenes_secundarias = []
             for imagen in imagenes_secundarias:
-                resultado = cloudinary.uploader.upload(imagen)
-                url_imagen = resultado['secure_url']
+                url_imagen = cloudinary_bd.subir_imagen(imagen)
                 urls_imagenes_secundarias.append(url_imagen)
 
             return jsonify({"urls_imagenes_secundarias": urls_imagenes_secundarias, "url_imagen_principal": url_imagen_principal})
         
         except Exception as e:
-            return jsonify({"error": str(e)}), 500     
-        
+            return jsonify({"error": str(e)}), 500    
+         
     def insertar_producto(self):
 
-        client = MongoClient(os.getenv('MONGO_URI'))
-        db = client.Productos
-
-        id = request.json['_id']
-        nombre = request.json['nombre_producto']
-        categoria = request.json['categoria']
-        descripcion = request.json['descripcion']
-        precio = int(request.json['precio'])
-        descuento = int(request.json['descuento'])
-        imagen_principal = request.json['imagen_principal']
-        imagenes_productos = request.json['imagenes_productos']
-        dimensiones = request.json['dimensiones']
-        material = request.json['material']
-
-        documento = {
-            "_id": id,
-            "nombre_producto": nombre,
-            "categoria": categoria,
-            "descripcion": descripcion,
-            "precio": precio,
-            "descuento": descuento,
-            "imagen_principal": imagen_principal,
-            "imagenes_productos": imagenes_productos,
-            "dimensiones": dimensiones,
-            "material": material
+        nuevo_producto = {
+            "_id": request.json['_id'],
+            "nombre_producto": request.json['nombre_producto'],
+            "categoria": request.json['categoria'],
+            "descripcion": request.json['descripcion'],
+            "precio": int(request.json['precio']),
+            "descuento": int(request.json['descuento']),
+            "imagen_principal": request.json['imagen_principal'],
+            "imagenes_productos": request.json['imagenes_productos'],
+            "dimensiones": request.json['dimensiones'],
+            "material": request.json['material']
         }
         
-        db.lista_productos.insert_one(documento)
+        resultado = mongo.insertar_producto(nuevo_producto)
+
+        if resultado == "agregado":
+            return jsonify({"mensaje": "Producto insertado correctamente"}), 200
+        else:
+            return jsonify({"mensaje": "error al insertar nuevo producto"}), 500       
         
-        return jsonify({"mensaje": "Producto insertado correctamente"})
-
-    # FALTA ACTUALIZAR LA IMAGEN EN LA BD
     def guardar_imagen(self):
-
-        client = MongoClient(os.getenv('MONGO_URI'))
-        db = client.Productos
-
-        cloudinary.config( 
-            cloud_name = os.getenv('CLOUD_NAME'), 
-            api_key = os.getenv('API_KEY'), 
-            api_secret = os.getenv('API_SECRET'))
         
         try:
             imagenes = request.files.getlist('imagenes')
+            # * Segun el tipo de imagen, se usa una funcion distinta en la bd
             tipo_imagen = request.form.get('tipo_imagen')
-            if tipo_imagen == "imagen principal":
-                id = request.form.get('id')
+            id = request.form.get('id')
 
+            # * Se puede guardar una imagen o varias y dependiendo del tipo de imagen
+            # * se hace una operacion u otra (condiciones mas abajo)
             urls_imagenes = []
-            
+
+            # * Se sube una o varias imagenes
             for imagen in imagenes:
-                resultado = cloudinary.uploader.upload(imagen)
-                url_imagen = resultado['secure_url']
+                url_imagen = cloudinary_bd.subir_imagen(imagen)
                 urls_imagenes.append(url_imagen)
 
-            print(urls_imagenes)
-
+            # * Se envia solamente la url de la imagen sola
             if tipo_imagen == "imagen principal":
-                print("entre a imagen principal")
-                db.lista_productos.update_many(
-                {"_id": id},
-                {"$set": {"imagen_principal": urls_imagenes[0]}})
-                print("imagen principal actualizada")
-                return jsonify({"urls_imagenes": urls_imagenes})
-            
+                resultado = mongo.actualizar_imagen_principal(id, urls_imagenes[0])
+                if resultado == "actualizada":
+                    return jsonify({"urls_imagenes": urls_imagenes,
+                                    "mensaje": "imagen principal actualizada"}), 200
+                else:
+                    return jsonify({"mensaje": "error al actualizar imagen principal"}), 500
+                
+            # * Se envia las url de las imagenes
             if tipo_imagen == "imagenes secundarias":
-                print("entre a imagen secundarias")
-                db.lista_productos.update_one(
-                    {"_id": id},
-                    {"$addToSet": {"imagenes_productos": {"$each": urls_imagenes}}}
-                )
-                print("Imagenes secundarias agregadas o actualizadas")
-                return jsonify({"urls_imagenes": urls_imagenes})
-        
-        except Exception as e:
+                resultado = mongo.actualizar_imagenes_secundarias(id, urls_imagenes, "set")
+                if resultado == "actualizada":
+                    return jsonify({"urls_imagenes": urls_imagenes,
+                                    "mensaje": "imagenes secundarias actualizadas"}), 200
+                else:
+                    return jsonify({"mensaje": "error al actualizar imagenes secundarias"}), 500
+                
+        except Exception as e:  
             return jsonify({"error": str(e)}), 500
-    
+     
     def get_productos(self):
-        client = MongoClient(os.getenv('MONGO_URI'))
-        db = client.Productos
-        
-        lista_productos = db.lista_productos.find()
+        lista_productos = mongo.traer_productos()
         datos = []
-
         for producto in lista_productos:
             datos.append(producto)
         
-        return jsonify({"productos": datos})
-    
+        return jsonify({"productos": datos}), 200
+     
     def editar_campo_producto(self):
 
-        client = MongoClient(os.getenv('MONGO_URI'))
-        db = client.Productos
-
         id = str(request.json['_id'])
-        nombre_producto = request.json['nombre_producto']
-        categoria = request.json['categoria']
-        precio = int(request.json['precio'])
-        descripcion = request.json['descripcion']
 
-        info_producto_editar = {
-            "nombre_producto": nombre_producto,
-            "categoria": categoria,
-            "descripcion": descripcion,
-            "precio": precio
+        productos_editar = {
+            "nombre_producto": request.json['nombre_producto'],
+            "categoria": request.json['categoria'],
+            "descripcion": request.json['descripcion'],
+            "precio": int(request.json['precio']),
+            "descuento": int(request.json['descuento']),
+            "dimensiones": request.json['dimensiones'],
+            "material": request.json['material']
         }
 
-        db.lista_productos.update_many(
-            {"_id": id},
-            {"$set": info_producto_editar})
+        resultado = mongo.actualizar_datos_productos(id, productos_editar)
 
-        return jsonify({"mensaje": "Producto actualizado correctamente"})
-    
+        if resultado == "actualizada":
+            return jsonify({"mensaje": "Producto actualizado correctamente"}), 200
+        else:
+            return jsonify({"mensaje": "error al actualizar informacion del producto"}), 500
+        
+    #TODO: En la web hay que enviarle el id del producto
     def eliminar_producto(self, id_producto):
-        client = MongoClient(os.getenv('MONGO_URI'))
-        db = client.Productos
+        db = mongo.conexion_mongo()
 
-        id = str(id_producto)
-
-        resultado = db.lista_productos.delete_one({"_id": id})
+        resultado = db.lista_productos.delete_one({"_id": str(id_producto)})
 
         if resultado.deleted_count == 1:
             return jsonify({"mensaje": "Producto eliminado correctamente"})

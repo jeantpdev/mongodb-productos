@@ -4,8 +4,10 @@ from rutas.rutas_productos import *
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
+app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
+jwt = JWTManager(app)
 
-# GENERALES
+# Registrar rutas de /rutas/
 app.register_blueprint(todo)
 
 #Pagina de error

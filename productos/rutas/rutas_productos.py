@@ -1,5 +1,5 @@
 from librerias import *
-from controladores.controlador_productos import *
+from productos.controladores.controlador_productos import *
 
 con_formulario = Formulario_Controlador()
 

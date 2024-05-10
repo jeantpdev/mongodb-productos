@@ -1,6 +1,6 @@
 from librerias import *
-from rutas.rutas_productos import *
-
+from productos.rutas.rutas_productos import *
+from logeo.rutas.ruta_logeo import *
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
@@ -9,6 +9,7 @@ jwt = JWTManager(app)
 
 # Registrar rutas de /rutas/
 app.register_blueprint(todo)
+app.register_blueprint(logeo)
 
 #Pagina de error
 def pagina_no_encontrada(error):

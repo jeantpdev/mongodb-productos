@@ -1,4 +1,4 @@
-from modelos.modelo_productos import *
+from productos.modelos.modelo_productos import *
 
 mod_formulario = Formulario()
 

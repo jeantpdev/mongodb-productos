@@ -1,6 +1,6 @@
 from librerias import *
-from conexionMongoDB import mongo
-from conexionCloudinary import cloudinary_bd
+from conexiones.conexionMongoDB import mongo
+from conexiones.conexionCloudinary import cloudinary_bd
 from utils import *
 
 class Formulario():  

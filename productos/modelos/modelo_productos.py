@@ -1,6 +1,6 @@
 from librerias import *
-from conexiones.conexionMongoDB import mongo
-from conexiones.conexionCloudinary import cloudinary_bd
+from consultas_bd.productos import consultas_productos
+from consultas_bd.consultas_cloudinary import consultas_cloudinary
 from utils import *
 
 class Formulario():  
@@ -8,7 +8,7 @@ class Formulario():
     #TODO: Recibir busqueda de columan en especifico
     def eliminar_imagen(self):
         id_producto = request.json['id']
-        producto = mongo.buscar_producto(id_producto)
+        producto = consultas_productos.buscar_producto(id_producto)
 
         if producto:
             imagen_url = request.json['imagen_url']
@@ -17,12 +17,12 @@ class Formulario():
             id_imagen = utils.extraer_id_imagen(imagen_url)
 
             try:
-                imagen_eliminada = cloudinary_bd.eliminar_imagen(id_imagen)
+                imagen_eliminada = consultas_cloudinary.eliminar_imagen(id_imagen)
 
                 if imagen_eliminada == "ok":
 
                     if tipo_imagen == "principal":
-                        resultado = mongo.actualizar_imagen_principal(id_producto, "no dado")
+                        resultado = consultas_productos.actualizar_imagen_principal(id_producto, "no dado")
 
                         if resultado == "actualizada":
                             return jsonify({"status_imagen_eliminada": "correcto", "mensaje": "Imagen eliminada"}), 200
@@ -31,7 +31,7 @@ class Formulario():
             
                     if tipo_imagen == "secundaria":
                         index_imagen_a_eliminar = producto["imagenes_productos"][index]
-                        resultado = mongo.actualizar_imagenes_secundarias(id_producto, index_imagen_a_eliminar, "pull")
+                        resultado = consultas_productos.actualizar_imagenes_secundarias(id_producto, index_imagen_a_eliminar, "pull")
 
                         #* TODO: Eliminar del frontend mensaje de confirmacion "status_imagen_eliminada"
                         if resultado == "actualizada":
@@ -53,12 +53,12 @@ class Formulario():
             imagenes_secundarias = request.files.getlist('imagenes_secundarias')
 
             # Se sube imagen principal
-            url_imagen_principal = cloudinary_bd.subir_imagen(imagen_principal[0])
+            url_imagen_principal = consultas_cloudinary.subir_imagen(imagen_principal[0])
 
             # Se suben las imagenes secundarias
             urls_imagenes_secundarias = []
             for imagen in imagenes_secundarias:
-                url_imagen = cloudinary_bd.subir_imagen(imagen)
+                url_imagen = consultas_cloudinary.subir_imagen(imagen)
                 urls_imagenes_secundarias.append(url_imagen)
 
             return jsonify({"urls_imagenes_secundarias": urls_imagenes_secundarias, "url_imagen_principal": url_imagen_principal})
@@ -81,7 +81,7 @@ class Formulario():
             "material": request.json['material']
         }
         
-        resultado = mongo.insertar_producto(nuevo_producto)
+        resultado = consultas_productos.insertar_producto(nuevo_producto)
 
         if resultado == "agregado":
             return jsonify({"mensaje": "Producto insertado correctamente"}), 200
@@ -102,12 +102,12 @@ class Formulario():
 
             # * Se sube una o varias imagenes
             for imagen in imagenes:
-                url_imagen = cloudinary_bd.subir_imagen(imagen)
+                url_imagen = consultas_cloudinary.subir_imagen(imagen)
                 urls_imagenes.append(url_imagen)
 
             # * Se envia solamente la url de la imagen sola
             if tipo_imagen == "imagen principal":
-                resultado = mongo.actualizar_imagen_principal(id, urls_imagenes[0])
+                resultado = consultas_productos.actualizar_imagen_principal(id, urls_imagenes[0])
                 if resultado == "actualizada":
                     return jsonify({"urls_imagenes": urls_imagenes,
                                     "mensaje": "imagen principal actualizada"}), 200
@@ -116,7 +116,7 @@ class Formulario():
                 
             # * Se envia las url de las imagenes
             if tipo_imagen == "imagenes secundarias":
-                resultado = mongo.actualizar_imagenes_secundarias(id, urls_imagenes, "set")
+                resultado = consultas_productos.actualizar_imagenes_secundarias(id, urls_imagenes, "set")
                 if resultado == "actualizada":
                     return jsonify({"urls_imagenes": urls_imagenes,
                                     "mensaje": "imagenes secundarias actualizadas"}), 200
@@ -127,7 +127,7 @@ class Formulario():
             return jsonify({"error": str(e)}), 500
      
     def get_productos(self):
-        lista_productos = mongo.traer_productos()
+        lista_productos = consultas_productos.traer_productos()
         datos = []
         for producto in lista_productos:
             datos.append(producto)
@@ -148,7 +148,7 @@ class Formulario():
             "material": request.json['material']
         }
 
-        resultado = mongo.actualizar_datos_productos(id, productos_editar)
+        resultado = consultas_productos.actualizar_datos_productos(id, productos_editar)
 
         if resultado == "actualizada":
             return jsonify({"mensaje": "Producto actualizado correctamente"}), 200
@@ -158,7 +158,7 @@ class Formulario():
     #TODO: En la web hay que enviarle el id del producto
     def eliminar_producto(self, id_producto):
 
-        resultado = mongo.eliminar_producto(id_producto)
+        resultado = consultas_productos.eliminar_producto(id_producto)
 
         if resultado == "eliminado":
             return jsonify({"mensaje": "Producto eliminado correctamente"})

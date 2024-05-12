@@ -6,7 +6,7 @@ con_formulario = Formulario_Controlador()
 #TODO: Validación | Mejorar mensajes de respuestas
 #TODO: Validación | Rutas protegidas por Token
 
-todo = Blueprint('todo', __name__)
+productos = Blueprint('productos', __name__)
 
 def autenticar_usuario(datos_usuario):
    rol_usuario = datos_usuario['user_rol']
@@ -16,7 +16,7 @@ def autenticar_usuario(datos_usuario):
       acceso = True
    return acceso
    
-@todo.route('/eliminar-imagen/', methods=['POST'])
+@productos.route('/eliminar-imagen/', methods=['POST'])
 @cross_origin()
 @jwt_required()
 def delete_imagen_productos():
@@ -32,7 +32,7 @@ def delete_imagen_productos():
           return jsonify({"error": str(e)}), 500     
 
 
-@todo.route('/crear-imagen/', methods=['POST'])
+@productos.route('/crear-imagen/', methods=['POST'])
 @cross_origin()
 @jwt_required()
 def post_crear_imagen_producto():
@@ -46,7 +46,7 @@ def post_crear_imagen_producto():
    except Exception as e:
           return jsonify({"error": str(e)}), 500     
 
-@todo.route('/guardar-imagen/', methods=['POST'])
+@productos.route('/guardar-imagen/', methods=['POST'])
 @cross_origin()
 @jwt_required()
 def post_imagen_productos():
@@ -61,12 +61,12 @@ def post_imagen_productos():
    except Exception as e:
           return jsonify({"error": str(e)}), 500     
    
-@todo.route('/productos/', methods=['GET'])
+@productos.route('/productos/', methods=['GET'])
 @cross_origin()
 def get_productos():
       return con_formulario.get_productos()
     
-@todo.route('/insertar-producto/', methods=['POST'])
+@productos.route('/insertar-producto/', methods=['POST'])
 @cross_origin()
 @jwt_required()
 def post_producto():
@@ -81,7 +81,7 @@ def post_producto():
    except Exception as e:
           return jsonify({"error": str(e)}), 500     
 
-@todo.route('/editar-producto/', methods=['PUT'])
+@productos.route('/editar-producto/', methods=['PUT'])
 @cross_origin()
 @jwt_required()
 def update_campo_producto():
@@ -96,7 +96,7 @@ def update_campo_producto():
    except Exception as e:
           return jsonify({"error": str(e)}), 500     
 
-@todo.route('/eliminar-producto/<id_producto>', methods=['DELETE'])
+@productos.route('/eliminar-producto/<id_producto>', methods=['DELETE'])
 @cross_origin()
 @jwt_required()
 def delete_producto(id_producto):

@@ -1,4 +1,4 @@
-from conexiones.logeo_mongodb import *
+from consultas_bd.logeo import *
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token
 from datetime import datetime, timedelta
@@ -12,7 +12,7 @@ class Modelo_Logeo():
         email = request.json.get('email')
         password = request.json.get('password')
 
-        user = mongo.buscar_dato("email", email)
+        user = consultas_logeo.buscar_dato("email", email)
 
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
             user_rol = user['rol']
@@ -34,12 +34,12 @@ class Modelo_Logeo():
         password = data.get('password', None)
         rol = data.get('rol', None)
         
-        if mongo.buscar_dato("email", email):
+        if consultas_logeo.buscar_dato("email", email):
             return jsonify({"msg": "El correo ya está en uso"}), 400
 
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-        res = mongo.crear_usuario(email, username, rol, hashed_password)
+        res = consultas_logeo.crear_usuario(email, username, rol, hashed_password)
 
         if (res):
             return jsonify({"msg": "Usuario registrado exitosamente", "user_id": str(res)}), 201

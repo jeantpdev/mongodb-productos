@@ -13,6 +13,19 @@ class Modelo_Pedidos():
             fecha_formateada = pedido['fecha'].strftime("%m/%d/%Y")
             hora_formateada = pedido['fecha'].strftime("%H:%M:%S")
             
+            # Crear una lista de productos formateados
+            productos_formateados = []
+            for producto in pedido['pedido']:
+                producto_formateado = {
+                    "nombre_producto": producto['nombre_producto'],
+                    "material": producto['material'],
+                    "cantidad": producto['cantidad'],
+                    "descuento": producto['descuento'],
+                    "total": producto['total'],
+                    "precio_total": producto['precio_total']
+                }
+                productos_formateados.append(producto_formateado)
+
             # Crear un nuevo diccionario con los campos modificados
             pedido_formateado = {
                 "_id": str(pedido['_id']),
@@ -21,10 +34,10 @@ class Modelo_Pedidos():
                 "numero": pedido['numero'],
                 "ciudad": pedido['ciudad'],
                 "direccion": pedido['direccion'],
-                "pedido": ['pedido'],
+                "pedido": productos_formateados,
                 "fecha": fecha_formateada,
                 "hora": hora_formateada,
-                "nombre_producto": pedido['pedido']['nombre_producto']
+                "imagen_producto": pedido['imagen_producto']
             }
             
             datos.append(pedido_formateado)

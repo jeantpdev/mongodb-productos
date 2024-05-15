@@ -28,12 +28,14 @@ class Modelo_Pedidos():
 
             # Crear un nuevo diccionario con los campos modificados
             pedido_formateado = {
+                "nombre_producto": producto['nombre_producto'],
                 "_id": str(pedido['_id']),
                 "nombre": pedido['nombre'],
                 "apellido": pedido['apellido'],
                 "numero": pedido['numero'],
                 "ciudad": pedido['ciudad'],
                 "direccion": pedido['direccion'],
+                "correo": pedido['correo'],
                 "pedido": productos_formateados,
                 "fecha": fecha_formateada,
                 "hora": hora_formateada,

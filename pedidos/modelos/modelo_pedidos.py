@@ -38,11 +38,36 @@ class Modelo_Pedidos():
                 "correo": pedido['correo'],
                 "pedido": productos_formateados,
                 "fecha": fecha_formateada,
-                "hora": hora_formateada,
-                "imagen_producto": pedido['imagen_producto']
+                "hora": hora_formateada
             }
             
             datos.append(pedido_formateado)
         
         return jsonify({"pedidos": datos}), 200
+
+    def crear_pedido(self):
+        try:
+            datos_cliente = request.json['datosCliente']
+            datos_pedido = request.json['pedido']
+            
+            nuevo_pedido = {
+                "nombre": datos_cliente['nombre'],
+                "apellido": datos_cliente['apellido'],
+                "correo": datos_cliente['correo'],
+                "numero": datos_cliente['numero'],
+                "ciudad": datos_cliente['ciudad'],
+                "direccion": datos_cliente['direccion'],
+                "fecha": datetime.utcnow(),  # Generar la fecha en el mismo formato
+                "pedido": datos_pedido
+            }
+
+            res = consultas_pedidos.crear_pedido(nuevo_pedido)
+            
+            print(res)
+            
+            return jsonify({"pedido": "pedido"}), 200    
+
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500    
+    
 

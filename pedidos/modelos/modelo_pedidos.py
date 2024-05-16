@@ -1,4 +1,5 @@
 from consultas_bd.pedidos import *
+from consultas_bd.correo import *
 from flask import Flask, request, jsonify
 from datetime import datetime
 
@@ -10,7 +11,7 @@ class Modelo_Pedidos():
 
         for pedido in lista_pedidos:
             # Convertir la fecha y hora al formato deseado
-            fecha_formateada = pedido['fecha'].strftime("%m/%d/%Y")
+            fecha_formateada = pedido['fecha'].strftime("%d/%m/%Y")
             hora_formateada = pedido['fecha'].strftime("%H:%M:%S")
             
             # Crear una lista de productos formateados
@@ -61,9 +62,11 @@ class Modelo_Pedidos():
                 "pedido": datos_pedido
             }
 
-            res = consultas_pedidos.crear_pedido(nuevo_pedido)
+            Correo.enviar_correo(nuevo_pedido)
+
+            #res = consultas_pedidos.crear_pedido(nuevo_pedido)
             
-            print(res)
+            #print(res)
             
             return jsonify({"pedido": "pedido"}), 200    
 

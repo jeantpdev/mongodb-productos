@@ -68,9 +68,9 @@ class Modelo_Pedidos():
             
             #print(res)
             
-            return jsonify({"pedido": "pedido"}), 200    
+            return jsonify({"mensaje": "Pedido registrado exitosamente"}), 200    
 
         except Exception as e:
-            return jsonify({"error": str(e)}), 500    
+            return jsonify({"error": str(e), "mensaje": "Error al registrar el pedido"}), 500    
     
 

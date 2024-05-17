@@ -45,7 +45,6 @@ class Formulario():
         else:
             return jsonify({"error": "no existe el id"})
         
- 
     def crear_imagen(self):
 
         try:
@@ -126,7 +125,7 @@ class Formulario():
         except Exception as e:  
             return jsonify({"error": str(e)}), 500
      
-    def get_productos(self):
+    def traer_productos(self):
         lista_productos = consultas_productos.traer_productos()
         datos = []
         for producto in lista_productos:

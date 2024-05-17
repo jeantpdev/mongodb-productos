@@ -1,0 +1,303 @@
+{
+  "definitions": {},
+  "info": {
+    "description": "powered by Flasgger",
+    "termsOfService": "/tos",
+    "title": "A swagger API",
+    "version": "0.0.1"
+  },
+  "paths": {
+    "/crear-pedido/": {
+      "post": {
+        "description": "Endpoint para registrar un nuevo pedido",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "datosCliente": {
+                "properties": {
+                  "apellido": {
+                    "example": "P\u00e9rez",
+                    "type": "string"
+                  },
+                  "ciudad": {
+                    "example": "Barranquilla",
+                    "type": "string"
+                  },
+                  "correo": {
+                    "example": "juan.perez@example.com",
+                    "type": "string"
+                  },
+                  "direccion": {
+                    "example": "Calle Falsa 123",
+                    "type": "string"
+                  },
+                  "nombre": {
+                    "example": "Juan",
+                    "type": "string"
+                  },
+                  "numero": {
+                    "example": "123456789",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "nombre",
+                  "apellido",
+                  "correo",
+                  "numero",
+                  "ciudad",
+                  "direccion"
+                ],
+                "type": "object"
+              },
+              "pedido": {
+                "items": {
+                  "properties": {
+                    "cantidad": {
+                      "example": 2,
+                      "type": "integer"
+                    },
+                    "precio": {
+                      "example": 120000,
+                      "format": "int",
+                      "type": "number"
+                    },
+                    "producto": {
+                      "example": "Nintendo Controller",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "producto",
+                    "cantidad",
+                    "precio"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "El pedido se ha registrado en la BD",
+            "examples": {
+              "application/json": {
+                "msg": "Pedido registrado exitosamente"
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor",
+            "examples": {
+              "application/json": {
+                "error": "error",
+                "mensaje": "Error al registrar el pedido"
+              }
+            }
+          }
+        },
+        "summary": "Registrar un nuevo pedido"
+      }
+    },
+    "/iniciar-sesion/": {
+      "post": {
+        "description": "Endpoint para iniciar sesi\u00f3n",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "email": {
+                  "example": "usuario@ejemplo.com",
+                  "type": "string"
+                },
+                "password": {
+                  "example": "contrasena123",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inicio de sesi\u00f3n exitoso",
+            "examples": {
+              "application/json": {
+                "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inv\u00e1lidas",
+            "examples": {
+              "application/json": {
+                "msg": "Credenciales inv\u00e1lidas"
+              }
+            }
+          }
+        },
+        "summary": "Iniciar sesi\u00f3n"
+      }
+    },
+    "/pedidos/": {
+      "get": {
+        "description": "Endpoint para obtener la lista de pedidos.",
+        "responses": {
+          "200": {
+            "description": "Lista de pedidos obtenida exitosamente.",
+            "schema": {
+              "properties": {
+                "pedidos": {
+                  "items": {
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "apellido": {
+                        "type": "string"
+                      },
+                      "ciudad": {
+                        "type": "string"
+                      },
+                      "correo": {
+                        "type": "string"
+                      },
+                      "direccion": {
+                        "type": "string"
+                      },
+                      "fecha": {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      "hora": {
+                        "format": "time",
+                        "type": "string"
+                      },
+                      "nombre": {
+                        "type": "string"
+                      },
+                      "nombre_producto": {
+                        "type": "string"
+                      },
+                      "numero": {
+                        "type": "string"
+                      },
+                      "pedido": {
+                        "items": {
+                          "properties": {
+                            "cantidad": {
+                              "type": "integer"
+                            },
+                            "descuento": {
+                              "type": "number"
+                            },
+                            "material": {
+                              "type": "string"
+                            },
+                            "nombre_producto": {
+                              "type": "string"
+                            },
+                            "precio_total": {
+                              "type": "number"
+                            },
+                            "total": {
+                              "type": "number"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Obtener la lista de pedidos"
+      }
+    },
+    "/registro/": {
+      "post": {
+        "description": "Endpoint para registrar un nuevo usuario",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "email": {
+                  "example": "juan.perez@example.com",
+                  "type": "string"
+                },
+                "password": {
+                  "example": "contrasena123",
+                  "type": "string"
+                },
+                "rol": {
+                  "example": "admin",
+                  "type": "string"
+                },
+                "username": {
+                  "example": "juanperez",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "username",
+                "email",
+                "password",
+                "rol"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Usuario registrado exitosamente",
+            "examples": {
+              "application/json": {
+                "msg": "Usuario registrado exitosamente",
+                "user_id": "1234567890"
+              }
+            }
+          },
+          "400": {
+            "description": "El correo ya est\u00e1 en uso",
+            "examples": {
+              "application/json": {
+                "msg": "El correo ya est\u00e1 en uso"
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno del servidor",
+            "examples": {
+              "application/json": {
+                "msg": "Error al registrar el usuario"
+              }
+            }
+          }
+        },
+        "summary": "Registro de usuario"
+      }
+    }
+  },
+  "swagger": "2.0"
+}

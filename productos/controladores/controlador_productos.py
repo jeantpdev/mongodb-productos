@@ -17,7 +17,7 @@ class Formulario_Controlador():
         return query
     
     def get_productos(self):
-        query = mod_formulario.get_productos()
+        query = mod_formulario.traer_productos()
         return query
     
     def post_producto(self):

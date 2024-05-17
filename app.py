@@ -1,9 +1,11 @@
 from librerias import *
+from flasgger import Swagger
 from productos.rutas.rutas_productos import *
 from logeo.rutas.ruta_logeo import *
 from pedidos.rutas.ruta_pedidos import *
 
 app = Flask(__name__)
+swagger = Swagger(app)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
 jwt = JWTManager(app)

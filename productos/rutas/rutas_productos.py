@@ -31,7 +31,6 @@ def delete_imagen_productos():
    except Exception as e:
           return jsonify({"error": str(e)}), 500     
 
-
 @productos.route('/crear-imagen/', methods=['POST'])
 @cross_origin()
 @jwt_required()

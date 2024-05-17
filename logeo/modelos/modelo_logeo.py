@@ -16,12 +16,8 @@ class Modelo_Logeo():
 
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
             user_rol = user['rol']
-            # Define el tiempo de expiración (10 segundos)
             expiry_time = timedelta(hours = 24)
-
-            # Pasar el rol del usuario como 'identity' en el token JWT
             access_token = create_access_token(identity={"user_rol": user_rol, "mensaje": "hola"}, expires_delta = expiry_time)# En la función login()
-
             return jsonify({"access_token": access_token}), 200
         else:
             return jsonify({"msg": "Credenciales inválidas"}), 401

@@ -20,7 +20,7 @@ class Formulario():
                 imagen_eliminada = consultas_cloudinary.eliminar_imagen(id_imagen)
 
                 if imagen_eliminada == "ok":
-
+                # Se le asigna "no dado" para que en el frontend le asigne una imagen
                     if tipo_imagen == "principal":
                         resultado = consultas_productos.actualizar_imagen_principal(id_producto, "no dado")
 
@@ -60,33 +60,11 @@ class Formulario():
                 url_imagen = consultas_cloudinary.subir_imagen(imagen)
                 urls_imagenes_secundarias.append(url_imagen)
 
-            return jsonify({"urls_imagenes_secundarias": urls_imagenes_secundarias, "url_imagen_principal": url_imagen_principal})
+            return jsonify({"urls_imagenes_secundarias": urls_imagenes_secundarias, "url_imagen_principal": url_imagen_principal}), 200
         
         except Exception as e:
-            return jsonify({"error": str(e)}), 500    
+            return jsonify({"mensaje": str(e)}), 500    
          
-    def insertar_producto(self):
-
-        nuevo_producto = {
-            "_id": request.json['_id'],
-            "nombre_producto": request.json['nombre_producto'],
-            "categoria": request.json['categoria'],
-            "descripcion": request.json['descripcion'],
-            "precio": int(request.json['precio']),
-            "descuento": int(request.json['descuento']),
-            "imagen_principal": request.json['imagen_principal'],
-            "imagenes_productos": request.json['imagenes_productos'],
-            "dimensiones": request.json['dimensiones'],
-            "material": request.json['material']
-        }
-        
-        resultado = consultas_productos.insertar_producto(nuevo_producto)
-
-        if resultado == "agregado":
-            return jsonify({"mensaje": "Producto insertado correctamente"}), 200
-        else:
-            return jsonify({"mensaje": "error al insertar nuevo producto"}), 500       
-        
     def guardar_imagen(self):
         
         try:
@@ -123,8 +101,8 @@ class Formulario():
                     return jsonify({"mensaje": "error al actualizar imagenes secundarias"}), 500
                 
         except Exception as e:  
-            return jsonify({"error": str(e)}), 500
-     
+            return jsonify({"mensaje": str(e)}), 500
+ 
     def traer_productos(self):
         lista_productos = consultas_productos.traer_productos()
         datos = []
@@ -132,7 +110,29 @@ class Formulario():
             datos.append(producto)
         
         return jsonify({"productos": datos}), 200
-     
+                   
+    def insertar_producto(self):
+
+        nuevo_producto = {
+            "_id": request.json['_id'],
+            "nombre_producto": request.json['nombre_producto'],
+            "categoria": request.json['categoria'],
+            "descripcion": request.json['descripcion'],
+            "precio": int(request.json['precio']),
+            "descuento": int(request.json['descuento']),
+            "imagen_principal": request.json['imagen_principal'],
+            "imagenes_productos": request.json['imagenes_productos'],
+            "dimensiones": request.json['dimensiones'],
+            "material": request.json['material']
+        }
+        
+        resultado = consultas_productos.insertar_producto(nuevo_producto)
+
+        if resultado == "agregado":
+            return jsonify({"mensaje": "Producto insertado correctamente"}), 200
+        else:
+            return jsonify({"mensaje": "error al insertar nuevo producto"}), 500       
+       
     def editar_campo_producto(self):
 
         id = str(request.json['_id'])

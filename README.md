@@ -37,12 +37,16 @@ API - Productos [Repositorio Backend](https://github.com/jeantpdev/mongodb-produ
 
 **Frontend**:
   * Astro
-  * React Backend:
+  * React
+    
+**Backend**:
   * Python
   * Flask
     
 **Base de datos**:
-  * MongoDB Hosting:
+  * MongoDB
+  
+**Hosting**:
   * Pagina: Vercel o Netlify
   * API: Render o PythonAnyWhere
 
@@ -54,7 +58,7 @@ API - Productos [Repositorio Backend](https://github.com/jeantpdev/mongodb-produ
  * Cloudinary: Servicio para subir multimedia
  * JWT: Autenticacion del usuario
 
-Flujo de trabajos:
+## Flujo de trabajos:
 
 VACIO
 

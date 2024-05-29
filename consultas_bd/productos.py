@@ -37,7 +37,7 @@ class consultas_productos:
             {"_id": id},
             {"$set": info_productos_editar})
         
-        if resultado.modified_count > 0:
+        if resultado.modified_count == 1:
             return "actualizada"
         else:
             return "no actualizada"
@@ -48,7 +48,7 @@ class consultas_productos:
         {"_id": id},
         {"$set": {"imagen_principal": imagen}})
 
-        if resultado.modified_count > 0:
+        if resultado.modified_count == 1:
             return "actualizada"
         else:
             return "no actualizada"
@@ -62,7 +62,7 @@ class consultas_productos:
                 {"_id": id},
                 {"$addToSet": {"imagenes_productos": {"$each": imagen}}})
 
-            if resultado.modified_count > 0:
+            if resultado.modified_count == 1:
                 return "actualizada"
             else:
                 return "no actualizada"
@@ -73,7 +73,7 @@ class consultas_productos:
                 {"_id": id},
                 {"$pull": {"imagenes_productos": imagen}})
             
-            if resultado.modified_count > 0:
+            if resultado.modified_count == 1:
                 return "actualizada"
             else:
                 return "no actualizada"

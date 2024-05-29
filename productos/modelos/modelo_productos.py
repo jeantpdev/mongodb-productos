@@ -112,47 +112,57 @@ class Formulario():
         return jsonify({"productos": datos}), 200
                    
     def insertar_producto(self):
+        try:
+            nuevo_producto = {
+                "_id": request.json['_id'],
+                "nombre_producto": request.json['nombre_producto'],
+                "categoria": request.json['categoria'],
+                "descripcion": request.json['descripcion'],
+                "precio": int(request.json['precio']),
+                "descuento": int(request.json['descuento']),
+                "imagen_principal": request.json['imagen_principal'],
+                "imagenes_productos": request.json['imagenes_productos'],
+                "dimensiones": request.json['dimensiones'],
+                "material": request.json['material']
+            }
+            
+            resultado = consultas_productos.insertar_producto(nuevo_producto)
 
-        nuevo_producto = {
-            "_id": request.json['_id'],
-            "nombre_producto": request.json['nombre_producto'],
-            "categoria": request.json['categoria'],
-            "descripcion": request.json['descripcion'],
-            "precio": int(request.json['precio']),
-            "descuento": int(request.json['descuento']),
-            "imagen_principal": request.json['imagen_principal'],
-            "imagenes_productos": request.json['imagenes_productos'],
-            "dimensiones": request.json['dimensiones'],
-            "material": request.json['material']
-        }
+            if resultado == "agregado":
+                return jsonify({"mensaje": "Producto insertado correctamente"}), 200
+            else:
+                return jsonify({"mensaje": "error al insertar nuevo producto"}), 500       
         
-        resultado = consultas_productos.insertar_producto(nuevo_producto)
-
-        if resultado == "agregado":
-            return jsonify({"mensaje": "Producto insertado correctamente"}), 200
-        else:
-            return jsonify({"mensaje": "error al insertar nuevo producto"}), 500       
-       
+        except Exception as e:  
+            return jsonify({"mensaje": str(e)}), 500
+        
     def editar_campo_producto(self):
+        try:
+            id = str(request.json['_id'])
 
-        id = str(request.json['_id'])
+            productos_editar = {
+                "nombre_producto": request.json['nombre_producto'],
+                "categoria": request.json['categoria'],
+                "descripcion": request.json['descripcion'],
+                "precio": int(request.json['precio']),
+                "descuento": int(request.json['descuento']),
+                "dimensiones": request.json['dimensiones'],
+                "material": request.json['material']
+            }
 
-        productos_editar = {
-            "nombre_producto": request.json['nombre_producto'],
-            "categoria": request.json['categoria'],
-            "descripcion": request.json['descripcion'],
-            "precio": int(request.json['precio']),
-            "descuento": int(request.json['descuento']),
-            "dimensiones": request.json['dimensiones'],
-            "material": request.json['material']
-        }
+            print(productos_editar)
 
-        resultado = consultas_productos.actualizar_datos_productos(id, productos_editar)
+            resultado = consultas_productos.actualizar_datos_productos(id, productos_editar)
 
-        if resultado == "actualizada":
-            return jsonify({"mensaje": "Producto actualizado correctamente"}), 200
-        else:
-            return jsonify({"mensaje": "error al actualizar informacion del producto"}), 500
+            print(resultado)
+
+            if resultado == "actualizada":
+                return jsonify({"mensaje": "Producto actualizado correctamente"}), 200
+            else:
+                return jsonify({"mensaje": "El producto no ha sido modificado"}), 200
+            
+        except Exception as e:  
+            return jsonify({"mensaje": str(e)}), 500
         
     #TODO: En la web hay que enviarle el id del producto
     def eliminar_producto(self, id_producto):
@@ -160,6 +170,6 @@ class Formulario():
         resultado = consultas_productos.eliminar_producto(id_producto)
 
         if resultado == "eliminado":
-            return jsonify({"mensaje": "Producto eliminado correctamente"})
+            return jsonify({"mensaje": "Producto eliminado correctamente"}), 200
         else:
-            return jsonify({"mensaje": "No se encontró ningún producto con el ID especificado"})
+            return jsonify({"mensaje": "No se encontró ningún producto con el ID especificado"}), 404
